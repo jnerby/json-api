@@ -6,13 +6,13 @@ def get_tag_responses(tags: list) -> list:
     tag_responses = []    
     # call api for each tag and push to a set - SET COMP NOT WORKING
     for tag in tags:
-        res = ping_api_response(tag).json()
+        res = call_api(tag).json()
         tag_responses.extend(res['posts'])
 
     return remove_duplicate_posts(tag_responses)
 
 ## TYPE INDICATOR FOR RESPONSE?
-def ping_api_response(tag: str):
+def call_api(tag: str):
     """Returns api call response"""
     payload = {'tag': tag}
     res = requests.get(API, params=payload)
@@ -40,6 +40,7 @@ def sort_result(result: list, sort_by_value: str, sort_direction: str) -> list:
         sorted_result = sorted(result, key=lambda i: i[sort_by_value], reverse=True)
     else:
         sorted_result = sorted(result, key=lambda i: i[sort_by_value])
+        
     return sorted_result
 
 #### TODO ####

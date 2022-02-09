@@ -12,29 +12,34 @@ def reroute_home():
 def ping_api():
     """Returns status code from pinging API"""
     # get response from pinging API
-    res = helpers.ping_api_response('all')
+    res = helpers.call_api('all')
     if res.status_code == 200:
         return jsonify({"success": "true"})
     return jsonify({"success": "false"})
 
-@app.route('/api/posts')
-def return_api_posts():
+@app.route('/api/posts/<tags>')
+def return_api_posts(tags):
     """Returns all posts with at least one tag specified"""
-    
     #### WHERE DOES URL COME FROM _ HOW TO SPLIT TAGS???
     # get list of tags user passed in
-    tags = ['tech', 'history', 'health']
+    print(tags)
+    # tag_list = [tags]
+    tag_list = tags.split(',')
+    # tags = ['tech', 'history', 'health']
     
-    # get unique 
-    result = helpers.get_tag_responses(tags)
+    # get unique responses
+    result = helpers.get_tag_responses(tag_list)
+    print(len(result))
 
     ### HOW TO EXTRACT SORT PREFERENCES
     sort_by_value = 'popularity'
-    sort_direction = 'desc'
+    sort_direction = None
 
+    # return result if no sort direction specified
     if not sort_direction:
         return jsonify(result)
     
+    # return sorted responses
     return jsonify(helpers.sort_result(result, sort_by_value, sort_direction))
 
 if __name__ == '__main__':
