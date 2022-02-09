@@ -1,8 +1,13 @@
 import helpers
-import json
 from flask import Flask, jsonify, redirect
+from flask_caching import Cache
 
+cache = Cache()
 app = Flask(__name__)
+
+app.config['CACHE_TYPE'] = 'simple'
+cache.init_app(app)
+
 
 @app.route('/')
 def reroute_home():
@@ -17,26 +22,26 @@ def ping_api():
         return jsonify({"success": "true"})
     return jsonify({"success": "false"})
 
+
+@app.route('/api/posts')
 @app.route('/api/posts/<tags>')
-def return_api_posts(tags):
+@app.route('/api/posts/<tags>/<sort_by_value>')
+@app.route('/api/posts/<tags>/<sort_by_value>/<sort_direction>')
+@cache.cached(timeout=10)
+def return_api_posts(tags=None, sort_by_value=None, sort_direction='asc'):
     """Returns all posts with at least one tag specified"""
-    #### WHERE DOES URL COME FROM _ HOW TO SPLIT TAGS???
+    # error if no tags passed in
+    if not tags:
+        return jsonify({"error" : "Tags parameter is required"})
+
     # get list of tags user passed in
-    print(tags)
-    # tag_list = [tags]
     tag_list = tags.split(',')
-    # tags = ['tech', 'history', 'health']
     
     # get unique responses
     result = helpers.get_tag_responses(tag_list)
-    print(len(result))
-
-    ### HOW TO EXTRACT SORT PREFERENCES
-    sort_by_value = 'popularity'
-    sort_direction = None
 
     # return result if no sort direction specified
-    if not sort_direction:
+    if not sort_by_value:
         return jsonify(result)
     
     # return sorted responses

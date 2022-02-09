@@ -1,4 +1,5 @@
 import requests
+from flask import jsonify
 
 API = 'https://api.hatchways.io/assessment/blog/posts'
 
@@ -11,8 +12,7 @@ def get_tag_responses(tags: list) -> list:
 
     return remove_duplicate_posts(tag_responses)
 
-## TYPE INDICATOR FOR RESPONSE?
-def call_api(tag: str):
+def call_api(tag: str) -> object:
     """Returns api call response"""
     payload = {'tag': tag}
     res = requests.get(API, params=payload)
@@ -35,13 +35,18 @@ def remove_duplicate_posts(tag_responses: list) -> list:
     return result
 
 def sort_result(result: list, sort_by_value: str, sort_direction: str) -> list:
-    """Sorts responses"""
-    if sort_direction == 'desc':
-        sorted_result = sorted(result, key=lambda i: i[sort_by_value], reverse=True)
-    else:
-        sorted_result = sorted(result, key=lambda i: i[sort_by_value])
-        
-    return sorted_result
+    """Sorts responses"""    
+    # get all keys
+    keys = set(result[0].keys())
 
-#### TODO ####
-# def get_tags_from_url(url)
+    # check that sort_by_value is valid key
+    if sort_by_value in keys:
+        if sort_direction == 'desc':
+            sorted_result = sorted(result, key=lambda i: i[sort_by_value], reverse=True)
+        elif sort_direction == 'asc':
+            sorted_result = sorted(result, key=lambda i: i[sort_by_value])
+
+        return sorted_result
+
+    # if sort_by_value or sort_direction invalid, return erro
+    return {"error": "sortBy parameter is invalid"}
