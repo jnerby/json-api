@@ -52,4 +52,4 @@ def sort_result(result: list, sort_by_value: str, sort_direction: str) -> list:
         return sorted_result
 
     # if sort_by_value or sort_direction invalid, return erro
-    return {"error": "sortBy parameter is invalid"}
+    return {"error": "sortBy parameter is invalid"}, 400

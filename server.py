@@ -36,7 +36,7 @@ def return_api_posts(tags=None, sort_by_value=None, sort_direction="asc"):
     """Returns all posts with at least one tag specified"""
     # error if no tags passed in
     if not tags:
-        return jsonify({"error": "Tags parameter is required"})
+        return jsonify({"error": "Tags parameter is required"}), 400
 
     # get list of tags user passed in
     tag_list = tags.split(",")
@@ -49,7 +49,7 @@ def return_api_posts(tags=None, sort_by_value=None, sort_direction="asc"):
         return jsonify(result)
 
     # return sorted responses
-    return jsonify({"posts" : helpers.sort_result(result, sort_by_value, sort_direction)})
+    return jsonify({"posts" : helpers.sort_result(result, sort_by_value, sort_direction)}), 200
 
 
 if __name__ == "__main__":
