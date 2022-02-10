@@ -13,7 +13,7 @@ cache = Cache(app)
 @app.route("/")
 @cache.cached(timeout=2)
 def reroute_home():
-    print("cached")
+    # print("cached")
     return redirect("/api/posts")
 
 
@@ -34,6 +34,7 @@ def ping_api():
 @cache.cached(timeout=50)
 def return_api_posts(tags=None, sort_by_value=None, sort_direction="asc"):
     """Returns all posts with at least one tag specified"""
+    ### ADD PRINT STATEMENT in route - curl to hit twice in a row
     # error if no tags passed in
     if not tags:
         return jsonify({"error": "Tags parameter is required"}), 400
