@@ -46,7 +46,7 @@ def return_api_posts(tags=None, sort_by_value=None, sort_direction="asc"):
 
     # return result if no sort direction specified
     if not sort_by_value:
-        return jsonify(result)
+        return jsonify(result), 200
 
     # return sorted responses
     return jsonify({"posts" : helpers.sort_result(result, sort_by_value, sort_direction)}), 200
